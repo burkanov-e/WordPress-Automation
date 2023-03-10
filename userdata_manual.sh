@@ -37,13 +37,9 @@ sudo yum install mariadb-server -y
 sudo systemctl start mariadb
 echo "Done with Mariadb" >> /tmp/test.txt
 
-# echo "Installing expect" >> /tmp/test.txt
-# sudo yum install -y expect
-# echo "Done with expect" >> /tmp/test.txt
-
- 
 echo "Mariadb: $(systemctl status mariadb | grep Active:)" >> /tmp/test.txt
 
+# MySQL secure installation
 
 mysql_secure_installation <<EOF
 
@@ -55,67 +51,6 @@ y
 EOF
 
 
-# expect -c "
-#     set timeout 10
-#     spawn mysql_secure_installation
-
-#     expect \"Enter current password for root (enter for none):\"
-#     send \"\r\"
-#     expect \"Change the root password?\"
-#     send \"n\r\"
-#     expect \"Remove anonymous users?\"
-#     send \"y\r\"
-#     expect \"Disallow root login remotely?\"
-#     send \"y\r\"
-#     expect \"Remove test database and access to it?\"
-#     send \"y\r\"
-#     expect \"Reload privilege tables now?\"
-#     send \"y\r\"
-#     expect eof
-# "
-
-# set timeout 10
-
-# spawn mysql_secure_installation
-
-# expect {
-#     "Enter current password for root (enter for none):" {
-#         send "\r"
-#         exp_continue
-#     }
-#     "Set root password?" {
-#         send "n\r"
-#         exp_continue
-#     }
-#     "Remove anonymous users?" {
-#         send "y\r"
-#         exp_continue
-#     }
-#     "Disallow root login remotely?" {
-#         send "y\r"
-#         exp_continue
-#     }
-#     "Remove test database and access to it?" {
-#         send "y\r"
-#         exp_continue
-#     }
-#     "Reload privilege tables now?" {
-#         send "y\r"
-#         exp_continue
-#     }
-#     eof {
-#         puts "MySQL secure installation completed successfully."
-#     }
-#     timeout {
-#         puts "Timeout occurred while waiting for output from mysql_secure_installation."
-#         exit 1
-#     }
-#     default {
-#         puts "Unexpected output from mysql_secure_installation: $expect_out(buffer)"
-#         exit 1
-#     }
-# }
-
 echo "Completed mysql secure installation" >> /tmp/test.txt
 
 mysql -e "CREATE DATABASE wordpress;"
@@ -125,9 +60,9 @@ mysql -e "FLUSH PRIVILEGES;"
 
 echo "Configured database" >> /tmp/test.txt
 
+# CURL
 
-
-if [[ $(which wget) ]]; then
+if [[ $(which wget) ]]; then 
     cd ~
     wget http://wordpress.org/latest.tar.gz
 else
